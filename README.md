@@ -41,6 +41,16 @@ Concept DOI: `10.5281/zenodo.18862098`
 
 Version DOI for `v1.0.0`: `10.5281/zenodo.18862097`
 
+## How to cite
+
+Preferred citation:
+
+Dzmitryi Kharlanau. "Dataset Bytes by Dzmitryi Kharlanau". CC BY-NC 4.0. DOI: 10.5281/zenodo.18862098.
+
+If you cite a specific release, use the version DOI:
+
+Dzmitryi Kharlanau. "Dataset Bytes by Dzmitryi Kharlanau", `v1.0.0`. CC BY-NC 4.0. DOI: 10.5281/zenodo.18862097.
+
 See `CITATION.cff` and the recommended citation guidance in `docs/citation.md`.
 
 ## Canonical website

@@ -4,7 +4,9 @@ Canonical dataset repository for the published dataset bytes by Dzmitryi Kharlan
 
 ## About
 
-Dzmitryi Kharlanau is a System Analyst and SAP Transformation Consultant focused on SAP delivery, agentic systems, data governance, AMS operating models, and reusable knowledge assets.
+Dzmitryi Kharlanau is the author and curator of these datasets. He is a SAP consultant and system analyst working across SAP transformation, data governance, AI, automation, and agentic systems.
+
+This repository publishes reusable dataset bytes created by Dzmitryi Kharlanau for research, learning, and non-commercial reuse with attribution.
 
 - Main website: https://dkharlanau.github.io/
 - LinkedIn: https://www.linkedin.com/in/dkharlanau

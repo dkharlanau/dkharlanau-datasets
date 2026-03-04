@@ -1,6 +1,7 @@
 cff-version: 1.2.0
-message: "If you use these datasets, cite the canonical URL or DOI and include attribution."
-title: "dkharlanau-datasets"
+message: "If you use these datasets, please cite Dzmitryi Kharlanau as the author and include the canonical URL or DOI."
+title: "Dataset Bytes by Dzmitryi Kharlanau"
+abstract: "Machine-readable datasets by Dzmitryi Kharlanau covering SAP transformation, data governance, AI, automation, and agentic systems."
 authors:
   - family-names: "Kharlanau"
     given-names: "Dzmitryi"
@@ -11,6 +12,8 @@ keywords:
   - "dataset"
   - "knowledge base"
   - "SAP"
+  - "automation"
+  - "AI"
   - "LLM"
   - "agents"
 preferred-citation:

@@ -1,0 +1,27 @@
+{
+  "title": "Dataset Bytes by Dzmitryi Kharlanau",
+  "upload_type": "dataset",
+  "description": "Machine-readable dataset bytes covering agentic development, SAP AMS, DAMA/MDG, TRIZ, and LLM prompts. Canonical landing pages remain on https://dkharlanau.github.io/datasets/.",
+  "creators": [
+    {
+      "name": "Kharlanau, Dzmitryi"
+    }
+  ],
+  "license": "CC-BY-NC-4.0",
+  "keywords": [
+    "dataset",
+    "knowledge base",
+    "SAP",
+    "agents",
+    "TRIZ",
+    "AMS",
+    "LLM"
+  ],
+  "related_identifiers": [
+    {
+      "scheme": "url",
+      "identifier": "https://dkharlanau.github.io/datasets/",
+      "relation": "isSupplementTo"
+    }
+  ]
+}

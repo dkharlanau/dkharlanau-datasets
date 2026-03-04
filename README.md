@@ -30,8 +30,9 @@ This repository contains machine-readable datasets only. It does not contain the
 
 The datasets in this repository are licensed under CC BY-NC 4.0:
 
-- Attribution required
 - Non-commercial use only
+- Attribution is mandatory
+- Attribution must include a clickable source link to the canonical dataset URL or repository page
 
 See `LICENSE-DATA`.
 

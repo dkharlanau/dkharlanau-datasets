@@ -2,12 +2,14 @@ cff-version: 1.2.0
 message: "If you use these datasets, please cite Dzmitryi Kharlanau as the author and include the canonical URL or DOI."
 title: "Dataset Bytes by Dzmitryi Kharlanau"
 abstract: "Machine-readable datasets by Dzmitryi Kharlanau covering SAP transformation, data governance, AI, automation, and agentic systems."
+doi: 10.5281/zenodo.18862098
 authors:
   - family-names: "Kharlanau"
     given-names: "Dzmitryi"
     website: "https://dkharlanau.github.io/"
 url: "https://dkharlanau.github.io/datasets/"
 repository-code: "https://github.com/dkharlanau/dkharlanau-datasets"
+version: "v1.0.0"
 keywords:
   - "dataset"
   - "knowledge base"
@@ -19,6 +21,7 @@ keywords:
 preferred-citation:
   type: webpage
   title: "Dataset Bytes by Dzmitryi Kharlanau"
+  doi: 10.5281/zenodo.18862098
   url: "https://dkharlanau.github.io/datasets/"
   author:
     - family-names: "Kharlanau"

@@ -2,12 +2,13 @@
 
 Recommended citation format:
 
-Dzmitryi Kharlanau. "<Title>" (dataset bytes). CC BY-NC 4.0. <Canonical URL or DOI>
+Dzmitryi Kharlanau. "<Title>" (dataset bytes). CC BY-NC 4.0. DOI: 10.5281/zenodo.18862098
 
-Until a DOI is minted, use the canonical website URL for the dataset entry or collection.
+DOI usage:
 
-Planned next step:
+- Concept DOI for the dataset repository: `10.5281/zenodo.18862098`
+- Version DOI for release `v1.0.0`: `10.5281/zenodo.18862097`
 
-- connect this repository to Zenodo
-- create `v1.0.0`
-- replace URL-only citations with DOI-based citations
+Canonical landing page:
+
+- https://dkharlanau.github.io/datasets/

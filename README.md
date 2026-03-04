@@ -1,5 +1,7 @@
 # dkharlanau-datasets
 
+[![DOI](https://zenodo.org/badge/1172361882.svg)](https://doi.org/10.5281/zenodo.18862097)
+
 Canonical dataset repository for the published dataset bytes by Dzmitryi Kharlanau.
 
 ## About
@@ -34,6 +36,10 @@ The datasets in this repository are licensed under CC BY-NC 4.0:
 See `LICENSE-DATA`.
 
 ## Citation
+
+Concept DOI: `10.5281/zenodo.18862098`
+
+Version DOI for `v1.0.0`: `10.5281/zenodo.18862097`
 
 See `CITATION.cff` and the recommended citation guidance in `docs/citation.md`.
 

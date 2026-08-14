@@ -36,11 +36,28 @@ The coverage file also normalizes SAP scope-item IDs onto stable author codes. F
 
 ## Deep control layer
 
-`sap_sales_control_plane_v0_1.json` adds the assessment-oriented process trace:
+`sap_sales_control_plane_v0_1.json` adds the forward-sales assessment trace:
 
 `document type → item category → schedule line / requirements → supply → stock → goods movement → billing & pricing → integration → failure → test`
 
 The first deep vertical covers `SD.SFS`, `SD.TPO`, `SD.PTO`, `SD.CON`, `SD.ICO`, `SD.AIC`, and `SD.MTO`. Standard SAP keys are stored only where a reviewed public SAP source makes the key explicit; otherwise the dataset stores the behavior instead of pretending a release-specific code is universal.
+
+### Returns and Claims specialized control plane
+
+`sap_sales_return_claims_control_plane_v0_1.json` uses a different grammar because reverse logistics is not simply forward Sales in reverse:
+
+`customer need → reference/reason → release/approval → physical receipt → ownership/stock → inspection/split → logistical follow-up → refund control → valuation/accounting → follow-on documents → integration → failure/test`
+
+Its central memory rule is: **goods received is not the same as goods owned, and goods owned is not the same as customer refunded.**
+
+The file contains:
+
+- ownership states from customer-owned product to non-valuated returns stock, valuated stock and final disposition
+- a normalized map of high-value ARM logistical follow-up activities such as `0001`, `0002`, `0005`, `0007`, `0021`, `0023`, and `0026`
+- refund controls `R / P / I / N` and their different effects for credit versus replacement
+- a deep `SD.RET.ARM` trace with inspection splits, ownership/valuation, supplier return and Service repair handoffs
+- process boundaries for `SD.RET.LEAN`, `SD.CLM.CMR`, `SD.CLM.DMR`, `SD.CLM.ICR`, `SD.CLM.INC`, and `SD.CLM.FOS`
+- failure proofs and small assessment-style tests rather than only process descriptions
 
 ## Reusable mechanism layer
 

@@ -22,6 +22,7 @@ This repository contains machine-readable datasets only. It does not contain the
 - `datasets/ams/`
 - `datasets/DAMA/`
 - `datasets/LLM-prompts/`
+- `datasets/sap-sales-processes/` — SAP Sales Process Atlas codebook and detailed process records
 - `datasets/TRIZ-bytes/`
 - `datasets/manifest.json`
 - `datasets/schema.json`

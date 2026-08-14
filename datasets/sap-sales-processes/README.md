@@ -7,6 +7,7 @@ The author code is intentionally separate from SAP scope-item identifiers:
 - `SD.<MNEMONIC>` = process or process family
 - `SD.<FAMILY>.<VARIANT>` = meaningful child variant
 - `SD.CLM.<VARIANT>` = customer claim / commercial correction family
+- `SD.BILL.<VARIANT>` = billing lifecycle / correction family
 - `SD+<MNEMONIC>` = overlay or cross-cutting capability
 - `MEC.SD.<MNEMONIC>` = reusable decision/control mechanism
 - `EXT-*` = controlled extension surface
@@ -17,7 +18,7 @@ The process codebook is the entry point. Detailed process records are grouped un
 
 ## High-coverage layer
 
-`sap_sales_process_coverage_v0_2.json` expands the process taxonomy from a core learning map into a practical coverage map. It adds 22 normalized records for claims, returns, billing, settlement, payment, third-party subvariants, configurable products and JIT supply.
+`sap_sales_process_coverage_v0_2.json` expands the process taxonomy from a core learning map into a practical coverage map. It now normalizes 46 process cards/overlays across 10 groups, with 26 additions over the original core map.
 
 The important hierarchy is intentional:
 
@@ -26,11 +27,12 @@ The important hierarchy is intentional:
 - `SD.RET.ARM` = Advanced Returns Management with inspection, disposition and refund logic
 - `SD.RET.KIT` = returns for sales kits
 - `SD.RET.REPAIR` = return-to-Service repair handoff
-- `SD.CLM.CMR` / `DMR` / `ICR` / `FOS` = credit, debit, invoice correction, and free replacement claims
+- `SD.CLM.CMR` / `DMR` / `ICR` / `INC` / `FOS` = credit, debit, invoice correction, invoice increase, and free replacement claims
+- `SD.BILL.COLL` / `PRELIM` / `RETRO` / `CANCEL` = billing consolidation, pre-invoice negotiation, retrospective repricing, and cancellation
 - `SD.TPO.SN` / `NSN` / `VC` = third-party execution variants
 - `SD.MTO.VC`, `SD.SA.CON`, `SD.JIT` = configuration/industry execution variants
 
-The coverage file also normalizes SAP scope-item IDs onto stable author codes. For example, BDN maps to `SD.PTO`, while Advanced ATP (1JW) maps to `MEC.SD.ATP` because ATP is a reusable mechanism rather than a new business branch.
+The coverage file also normalizes SAP scope-item IDs onto stable author codes. For example, BDN maps to `SD.PTO`, while Advanced ATP (1JW) maps to `MEC.SD.ATP` because ATP is a reusable mechanism rather than a new business branch. Distinct but not-yet-deepened candidates such as configurable-material returns (7KW) and classic down payment processing (BKJ) stay explicit rather than being incorrectly merged into newer variants.
 
 ## Deep control layer
 

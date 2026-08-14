@@ -1,0 +1,45 @@
+{
+  "id":"sap_sales_return_claims_architecture_notes_v0_1",
+  "title":"SAP Sales Returns and Claims Architecture Notes",
+  "tags":["sap","s4hana","returns","claims","architecture","governance","ewm","api"],
+  "meta":{"schema":"dkharlanau.dataset.byte","schema_version":"1.1","dataset":"sap-sales-processes","canonical_url":"https://dkharlanau.github.io/labs/enterprise-context/sales-processes/control-plane/returns-claims/","updated_at_utc":"2026-08-14T18:08:00Z","entity_type":"sap_sales_return_claims_architecture_notes","license":{"name":"Creative Commons Attribution-NonCommercial 4.0 International","spdx":"CC-BY-NC-4.0"}},
+  "semantic_keys":[
+    {"name":"returns_order_reason","meaning":"Why the return transaction exists at header/commercial level"},
+    {"name":"return_reason","meaning":"Why the customer returns the item; customer-facing root-cause dimension"},
+    {"name":"inspection_code","meaning":"What was physically found during inspection"},
+    {"name":"logistical_follow_up","meaning":"What physically happens next to the returned quantity"},
+    {"name":"refund_type","meaning":"What the customer receives: credit or replacement"},
+    {"name":"refund_control","meaning":"When/how compensation is executed: defer, approved flow, immediate or none"},
+    {"name":"refund_code","meaning":"Commercial extent of the refund, typically a percentage"}
+  ],
+  "architecture_traps":[
+    {"id":"TRAP-RET-OWNERSHIP","rule":"Do not equate goods receipt with ownership; deferred returns can enter non-valuated returns stock first."},
+    {"id":"TRAP-RET-REFUND-VALUATION","rule":"Refund can trigger ownership/valuation; decide whether valuation should instead wait for final logistical follow-up."},
+    {"id":"TRAP-CLM-WF-BLOCK","rule":"For credit/debit memo request approval workflow, do not also configure a billing block on the relevant request type if workflow is expected to start; choose governance deliberately."},
+    {"id":"TRAP-RET-REASON-COLLAPSE","rule":"Keep customer reason, inspection result, physical disposition and refund decision as separate dimensions."},
+    {"id":"TRAP-RET-API-VERSION","rule":"Choose Customer Return V2/V4/A2A by required features; do not assume parity."},
+    {"id":"TRAP-RET-REPAIR-UI","rule":"Separate business capability from app/release support for repair follow-up."},
+    {"id":"TRAP-RET-VC","rule":"Treat configurable-material returns as a separate edge because some free-stock and Service follow-ups have restrictions."}
+  ],
+  "valuation_choices":[
+    {"choice":"material_valuation","question":"Is current material valuation the correct economic basis?"},
+    {"choice":"valuation_with_reference_to_sales","question":"Should valuation use historical sales context where supported/configured?"},
+    {"choice":"suspend_until_final_follow_up","question":"Is refund really the ownership trigger, or should final disposition transfer ownership?"}
+  ],
+  "ewm_modes":[
+    {"mode":"s4_led","sequence":"returns order → S/4 inspection/decision → follow-on document → EWM execution"},
+    {"mode":"ewm_qie_led","sequence":"returns order → EWM goods receipt/inspection → local simple follow-up or hand complex decision back to S/4"}
+  ],
+  "api_choices":[
+    {"interface":"Customer Return A2X OData V4","fit":"new standard CBAR integrations, AVC/automatic-inspection needs","watch":"feature set differs from V2; approval release/reject differs"},
+    {"interface":"Customer Return A2X OData V2","fit":"existing CBAR/CBRE integrations and approval release/reject use cases","watch":"new capabilities are concentrated in V4"},
+    {"interface":"Customer Return A2A","fit":"asynchronous application-to-application returns integration","watch":"reference/object-processing limits differ from A2X"},
+    {"interface":"Returns Inspection A2X OData V4","fit":"external inspection applications and inspection split items","watch":"inspection interface, not full returns orchestration"},
+    {"interface":"Credit Memo Request A2X OData V4","fit":"external commercial credit-claim capture","watch":"approval/reference/copying remain business controls"}
+  ],
+  "deployment_edges":[
+    {"topic":"refund_control_A","rule":"Treat A (after receipt of credit memo) as deployment/process specific, not universal across current Public Cloud descriptions."},
+    {"topic":"repair_follow_up_codes","rule":"Older/deployment-specific ARM can expose repair activities beyond 0026; verify release and target Service architecture."},
+    {"topic":"configurable_materials","rule":"Verify 0002/0011 and Service-repair restrictions before reusing generic ARM design for configurable returns."}
+  ]
+}

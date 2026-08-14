@@ -1,0 +1,103 @@
+{
+  "id": "sap_sales_return_claims_control_plane_v0_1",
+  "title": "SAP Sales Returns and Claims Control Plane",
+  "tags": ["sap","s4hana","sales","customer-returns","advanced-returns-management","claims","refund","inspection","reverse-logistics"],
+  "meta": {
+    "schema": "dkharlanau.dataset.byte",
+    "schema_version": "1.1",
+    "dataset": "sap-sales-processes",
+    "source_project": "dkharlanau/dkharlanau.github.io",
+    "canonical_url": "https://dkharlanau.github.io/labs/enterprise-context/sales-processes/control-plane/returns-claims/",
+    "updated_at_utc": "2026-08-14T17:55:00Z",
+    "entity_type": "sap_sales_return_claims_control_plane",
+    "summary": "Deep reverse-logistics and customer-claims model separating physical receipt, ownership, inspection, disposition and compensation.",
+    "license": {"name":"Creative Commons Attribution-NonCommercial 4.0 International","spdx":"CC-BY-NC-4.0"}
+  },
+  "memory_rule": "Goods received is not the same as goods owned, and goods owned is not the same as customer refunded.",
+  "control_chain": ["customer_need","reference_and_reason","release_and_approval","physical_receipt","ownership_and_stock","inspection_and_split","logistical_follow_up","refund_control","valuation_and_accounting","follow_on_documents","integration","failure_and_test"],
+  "ownership_states": [
+    {"state":"customer_owned_not_received","meaning":"Customer still has the product or it is returning; no company stock yet."},
+    {"state":"received_non_valuated_returns_stock","meaning":"Product is physically received while ownership/refund can remain undecided; typical full-return inspection buffer."},
+    {"state":"valuated_returns_stock","meaning":"Ownership transferred to the company while final disposition can still be pending."},
+    {"state":"final_valuated_destination","meaning":"Product reaches unrestricted, scrap, specified stock or another owned destination."},
+    {"state":"forwarded","meaning":"Product leaves toward supplier, customer, other plant or repair according to the follow-up branch."}
+  ],
+  "follow_up_map": [
+    {"code":"0001","title":"Receive into Plant","group":"inspect_later","ownership_signal":false,"creates":"returns delivery / goods receipt; final decision later"},
+    {"code":"0002","title":"Immediately Move to Free Available Stock","group":"close_in_plant","ownership_signal":true,"creates":"inspection + returns delivery + GR to unrestricted stock"},
+    {"code":"0003","title":"Immediately Move to Scrap","group":"close_in_plant","ownership_signal":true,"creates":"GR to returns stock + scrap movement"},
+    {"code":"0004","title":"Ship to Other Plant","group":"forward_internal","ownership_signal":"context_dependent","creates":"returns stock transport order"},
+    {"code":"0005","title":"Ship to Supplier","group":"forward_supplier","ownership_signal":"context_dependent","creates":"returns purchase order after company receipt/inspection"},
+    {"code":"0007","title":"Direct Shipment to Supplier","group":"forward_supplier","ownership_signal":"commercial_decision_separate","creates":"returns purchase order; customer ships directly to supplier"},
+    {"code":"0008","title":"Inspection at Customer Site","group":"intermediate","ownership_signal":false,"creates":"no final logistics document; next follow-up must be selected"},
+    {"code":"0011","title":"Transfer to Free Available Stock","group":"after_receipt","ownership_signal":true,"creates":"material posting to unrestricted stock"},
+    {"code":"0012","title":"Transfer to Scrap","group":"after_receipt","ownership_signal":true,"creates":"material posting to scrap"},
+    {"code":"0015","title":"Transfer to Specified Stock","group":"after_receipt","ownership_signal":true,"creates":"material posting to configured target stock"},
+    {"code":"0021","title":"Send Back to Customer","group":"customer","ownership_signal":false,"creates":"outbound delivery to customer"},
+    {"code":"0023","title":"Goods Receipt Quantity Correction","group":"quantity_correction","ownership_signal":"correction","creates":"outbound delivery without order reference + GI for missing quantity"},
+    {"code":"0026","title":"In-House Repair (Service)","group":"service_handoff","ownership_signal":false,"creates":"in-house repair + optional repair-storage movement"}
+  ],
+  "refund_controls": [
+    {"code":"R","title":"Decide Later","credit":"no refund document yet","replacement":"no replacement document yet"},
+    {"code":"P","title":"Start Approved Refund","credit":"create credit memo request","replacement":"create subsequent delivery free of charge"},
+    {"code":"I","title":"Immediate","credit":"create credit memo immediately; product must be marked received","replacement":"create replacement order, delivery and GI immediately"},
+    {"code":"N","title":"No Refund","credit":"none","replacement":"none"}
+  ],
+  "process_records": [
+    {
+      "code":"SD.RET.ARM",
+      "kind":"reverse_logistics_control_plane",
+      "one_sentence":"Physical receipt, ownership, inspection/disposition and customer compensation are separate controls.",
+      "trace":[
+        "reference sales order/billing document + return reason",
+        "returns order save/release + optional approval",
+        "returns delivery + goods receipt",
+        "non-valuated or valuated returns stock",
+        "inspection result + optional quantity splits",
+        "logistical follow-up per inspected quantity",
+        "refund type + refund control",
+        "ownership valuation + billing/FI",
+        "MM/EWM/Service/API handoff"
+      ],
+      "data_hinges":["reference document/item","return reason","follow-up activity","refund type/control","product received indicator","inspection split quantity","valuation suspension","serial/batch"],
+      "failure_proofs":[
+        {"symptom":"premature ownership","trace":"refund control → valuation suspension → follow-up ownership signal → stock state"},
+        {"symptom":"wrong disposition","trace":"inspection split → confirmed follow-up → supplier/plant/storage/service prerequisites → generated document"},
+        {"symptom":"refund mismatch","trace":"split quantity → refund determination level → refund code → credit/replacement quantity"},
+        {"symptom":"bad stock available too early","trace":"receiving stock → valuation → unrestricted transfer → ATP/MRP visibility"},
+        {"symptom":"supplier return missing","trace":"0005/0007 → supplier/RMA/address → returns PO → MM flow"},
+        {"symptom":"repair handoff missing","trace":"0026 → no-refund control → serial/equipment → Service integration → repair object"}
+      ],
+      "tests":[
+        {"id":"split-disposition","case":"10 returned; 6 reusable, 4 scrap","assert":["splits total 10","6 free stock","4 scrap","refund traceable to inspected quantities"]},
+        {"id":"deferred-ownership","case":"0001 + Decide Later","assert":["physical GR exists","non-valuated returns stock before ownership decision","refund incomplete","final decision creates expected valuation"]},
+        {"id":"supplier-return","case":"0005 after inspection","assert":["supplier mandatory","returns PO created","return-to address correct","Sales-to-MM trace visible"]},
+        {"id":"replacement","case":"replacement product differs from returned product","assert":["replacement product/quantity/plant explicit","SDF created","outbound execution traceable","physical return disposition remains independent"]}
+      ]
+    },
+    {"code":"SD.RET.LEAN","kind":"reverse_logistics_simple","one_sentence":"Simple receipt to valuated stock plus credit; no inspection-driven disposition engine.","boundary":"Use ARM when inspection, supplier/plant forwarding, repair or flexible refund control is required."},
+    {"code":"SD.CLM.CMR","kind":"financial_claim","one_sentence":"Goods stay with customer; reduce the receivable through a governed credit request.","control_chain":["reference/reason","requested value and pricing","billing block/approval","release","credit memo","FI"],"key_failure":"Historical claim accidentally uses wrong copied/redetermined pricing context."},
+    {"code":"SD.CLM.DMR","kind":"financial_claim","one_sentence":"Goods do not move; increase the receivable through a governed debit request.","control_chain":["reference/reason","debit value","billing block/approval","release","debit memo","FI"]},
+    {"code":"SD.CLM.ICR","kind":"invoice_correction","one_sentence":"Correct the invoice by preserving original and corrected values as a paired-item delta.","control_chain":["invoice reference","credit/debit item pair","change debit side","review/block","bill delta"]},
+    {"code":"SD.CLM.INC","kind":"invoice_increase","one_sentence":"Existing invoice is explicitly too low; calculate and bill the increase delta.","control_chain":["invoice reference","higher corrected quantity/price","review/block","debit memo delta"]},
+    {"code":"SD.CLM.FOS","kind":"replacement_claim","one_sentence":"Resolve shortage or damage with another goods shipment instead of money.","control_chain":["original order reference","replacement quantity","delivery block/review","delivery","PGI","no normal customer charge"]}
+  ],
+  "integration_boundaries": [
+    {"domain":"EWM","owns":"warehouse execution and optional inspection/simple follow-up","sales_owns":"returns order and end-to-end orchestration"},
+    {"domain":"MM/Purchasing","owns":"returns PO and supplier-return execution","sales_owns":"decision to route 0005/0007 and customer-side trace"},
+    {"domain":"Service","owns":"in-house repair execution","sales_owns":"return/inspection decision and repair handoff"},
+    {"domain":"Billing/FI","owns":"credit/debit financial documents and postings","sales_owns":"refund/claim decision and reference"},
+    {"domain":"APIs","owns":"external integration contract","notes":"Customer Return A2X V4 supports standard CBAR processing; Returns Inspection A2X V4 supports inspection data and split items; API feature coverage differs by interface version."}
+  ],
+  "source_refs": [
+    {"id":"customer-returns","url":"https://help.sap.com/docs/SAP_S4HANA_CLOUD/a376cd9ea00d476b96f18dea1247e6a5/ef17554b70b946e588cf4fb378fa4622.html"},
+    {"id":"returns-order","url":"https://help.sap.com/docs/SAP_S4HANA_CLOUD/a376cd9ea00d476b96f18dea1247e6a5/e39b7fc41e21465498820a32fe158821.html"},
+    {"id":"follow-up","url":"https://help.sap.com/docs/SAP_S4HANA_CLOUD/a376cd9ea00d476b96f18dea1247e6a5/aad8417242c84d70a64b2742fe818c90.html"},
+    {"id":"compensation","url":"https://help.sap.com/docs/SAP_S4HANA_CLOUD/a376cd9ea00d476b96f18dea1247e6a5/436368e8646443988837608bb121e92d.html"},
+    {"id":"returns-stock","url":"https://help.sap.com/docs/SAP_S4HANA_CLOUD/a376cd9ea00d476b96f18dea1247e6a5/ec5057f7b5d04f9f95231713116b9a98.html"},
+    {"id":"returns-inspection-api","url":"https://help.sap.com/docs/SAP_S4HANA_CLOUD/03c04db2a7434731b7fe21dca77440da/b3a6192e1f6d42e8a2e41a1aeb2538f5.html"},
+    {"id":"credit-memo-request","url":"https://help.sap.com/docs/SAP_S4HANA_CLOUD/a376cd9ea00d476b96f18dea1247e6a5/9565b65334e6b54ce10000000a174cb4.html"},
+    {"id":"invoice-correction","url":"https://help.sap.com/docs/SAP_S4HANA_CLOUD/a376cd9ea00d476b96f18dea1247e6a5/a165b65334e6b54ce10000000a174cb4.html"},
+    {"id":"approval-workflow","url":"https://help.sap.com/docs/SAP_S4HANA_CLOUD/a376cd9ea00d476b96f18dea1247e6a5/5a5f3f686c06490893a588c99b36adca.html"}
+  ]
+}

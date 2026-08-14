@@ -59,6 +59,8 @@ The file contains:
 - process boundaries for `SD.RET.LEAN`, `SD.CLM.CMR`, `SD.CLM.DMR`, `SD.CLM.ICR`, `SD.CLM.INC`, and `SD.CLM.FOS`
 - failure proofs and small assessment-style tests rather than only process descriptions
 
+`sap_sales_return_claims_architecture_notes_v0_1.json` sits above the process trace and stores the Lead-level choices that are easy to lose in a flow diagram: semantic separation of return reason / inspection / disposition / refund, valuation policy, approval-workflow versus billing-block governance, EWM inspection ownership, API-version choice, configurable-material restrictions, and deployment-specific edges.
+
 ## Reusable mechanism layer
 
 `sap_sales_mechanism_codebook_v0_1.json` separates reusable system mechanisms from process variants. A process answers **which business branch is running**; a mechanism answers **which decision engine produced this field or behavior**.

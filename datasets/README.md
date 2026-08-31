@@ -1,19 +1,24 @@
 # Datasets
 
-Curated, machine-readable "bytes" for writing and reuse.
+Curated, machine-readable records for research, learning, retrieval, evaluation, and
+structured knowledge work.
 
-License
-- CC BY-NC 4.0 (Attribution + Non-Commercial): https://creativecommons.org/licenses/by-nc/4.0/
-- Details: https://dkharlanau.github.io/legal/datasets/
+## Discovery
 
-Creator
-- Name: Dzmitryi Kharlanau
-- Role: SAP Lead
-- Website: https://dkharlanau.github.io
-- LinkedIn: https://www.linkedin.com/in/dkharlanau
+Use [`manifest.json`](manifest.json) as the complete machine-readable registry of
+independently citable records. Each entry provides a dataset name, stable identifier,
+relative path, title, tags, entity type, and summary.
 
-Attribution
-- Please cite the canonical dataset URL (preferred) and include author + license.
+Some collections also contain supporting group files. They are valid public JSON, but
+they are discovered through their parent dataset rather than listed as independent
+records. See the repository [dataset contract](../docs/data-contract.md).
 
-Index
-- See `manifest.json` for a complete machine-readable index of all entries.
+## License and attribution
+
+- License: [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)
+- Creator: Dzmitryi Kharlanau, SAP Lead
+- Website: <https://dkharlanau.github.io>
+- LinkedIn: <https://www.linkedin.com/in/dkharlanau>
+
+Please cite the canonical dataset URL when available and include the creator and license.
+Repository-level citation guidance is available in [`docs/citation.md`](../docs/citation.md).

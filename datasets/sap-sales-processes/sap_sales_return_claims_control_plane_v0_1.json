@@ -6,12 +6,15 @@
     "schema": "dkharlanau.dataset.byte",
     "schema_version": "1.1",
     "dataset": "sap-sales-processes",
-    "source_project": "dkharlanau/dkharlanau.github.io",
+    "source_project": "dkharlanau/dkharlanau-datasets",
+    "source_path": "datasets/sap-sales-processes/sap_sales_return_claims_control_plane_v0_1.json",
     "canonical_url": "https://dkharlanau.github.io/labs/enterprise-context/sales-processes/control-plane/returns-claims/",
     "updated_at_utc": "2026-08-14T17:55:00Z",
     "entity_type": "sap_sales_return_claims_control_plane",
     "summary": "Deep reverse-logistics and customer-claims model separating physical receipt, ownership, inspection, disposition and compensation.",
-    "license": {"name":"Creative Commons Attribution-NonCommercial 4.0 International","spdx":"CC-BY-NC-4.0"}
+    "creator": {"name":"Dzmitryi Kharlanau","role":"SAP Consultant","website":"https://dkharlanau.github.io","linkedin":"https://www.linkedin.com/in/dkharlanau"},
+    "attribution": {"attribution_required":true,"preferred_citation":"Dzmitryi Kharlanau. \"SAP Sales Returns and Claims Control Plane\". CC BY-NC 4.0. https://dkharlanau.github.io/labs/enterprise-context/sales-processes/control-plane/returns-claims/"},
+    "license": {"name":"Creative Commons Attribution-NonCommercial 4.0 International","spdx":"CC-BY-NC-4.0","url":"https://creativecommons.org/licenses/by-nc/4.0/"}
   },
   "memory_rule": "Goods received is not the same as goods owned, and goods owned is not the same as customer refunded.",
   "control_chain": ["customer_need","reference_and_reason","release_and_approval","physical_receipt","ownership_and_stock","inspection_and_split","logistical_follow_up","refund_control","valuation_and_accounting","follow_on_documents","integration","failure_and_test"],

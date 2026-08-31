@@ -1,6 +1,7 @@
 # SAP, Enterprise Operations & Agentic AI Datasets — Dzmitryi Kharlanau
 
 [![DOI](https://zenodo.org/badge/1172361882.svg)](https://doi.org/10.5281/zenodo.18862097)
+[![Dataset integrity](https://github.com/dkharlanau/dkharlanau-datasets/actions/workflows/dataset-integrity.yml/badge.svg)](https://github.com/dkharlanau/dkharlanau-datasets/actions/workflows/dataset-integrity.yml)
 
 Canonical machine-readable dataset repository curated by **Dzmitryi Kharlanau** for research and reusable work around SAP transformation, enterprise operations, data governance, AI, automation, and agentic systems.
 
@@ -17,6 +18,33 @@ This repository publishes reusable dataset bytes created or curated by Dzmitryi 
 
 This repository contains machine-readable datasets only. It does not contain the personal website, CV pages, private client data, credentials, or internal enterprise exports.
 
+## Quick start
+
+Clone the repository and validate the complete public collection with Python 3.10+:
+
+```bash
+git clone https://github.com/dkharlanau/dkharlanau-datasets.git
+cd dkharlanau-datasets
+python3 scripts/dataset_registry.py validate
+```
+
+Discover records through the manifest instead of assuming a directory layout:
+
+```python
+import json
+from pathlib import Path
+
+root = Path("datasets")
+manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+
+for entry in manifest["entries"]:
+    record = json.loads((root / entry["path"]).read_text(encoding="utf-8"))
+    print(entry["dataset"], entry["id"], record.get("title"))
+```
+
+The repository uses only JSON and a standard-library validator; no package installation
+is required for this workflow.
+
 ## Contents
 
 - `datasets/agentic-bytes/` — compact records about agentic systems and patterns
@@ -27,6 +55,9 @@ This repository contains machine-readable datasets only. It does not contain the
 - `datasets/TRIZ-bytes/` — structured TRIZ knowledge records
 - `datasets/manifest.json` — dataset discovery manifest
 - `datasets/schema.json` — shared structural schema
+
+See [`docs/data-contract.md`](docs/data-contract.md) for record identity, supporting-file,
+compatibility, and deterministic manifest rules.
 
 ## Intended use
 
@@ -40,6 +71,20 @@ The repository is designed for transparent reuse in:
 - reproducible examples that benefit from stable, citable data
 
 Dataset availability does not make every record authoritative for a production SAP landscape. Validate technical and process decisions against the relevant system, documentation, and organizational context.
+
+## Quality and change workflow
+
+All committed JSON files must parse successfully. Records with `meta.schema` set to
+`dkharlanau.dataset.byte` must satisfy the common provenance and attribution contract and
+must be present in the generated manifest.
+
+```bash
+python3 scripts/dataset_registry.py build     # refresh the manifest after record changes
+python3 scripts/dataset_registry.py validate  # validate data and manifest freshness
+```
+
+Dataset-specific payloads remain intentionally heterogeneous. Consumers should rely on
+the shared metadata for discovery and inspect the domain payload before production use.
 
 ## License
 

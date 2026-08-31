@@ -1,7 +1,7 @@
 {
   "schema": "dkharlanau.dataset.manifest",
   "schema_version": "1.1",
-  "generated_at_utc": "2026-03-04T07:40:53+00:00",
+  "generated_at_utc": "2026-08-14T18:15:00+00:00",
   "license": {
     "name": "Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)",
     "spdx": "CC-BY-NC-4.0",
@@ -18,7 +18,7 @@
     "linkedin": "https://www.linkedin.com/in/dkharlanau"
   },
   "datasets_root": "datasets",
-  "count": 133,
+  "count": 141,
   "entries": [
     {
       "dataset": "DAMA",
@@ -1352,6 +1352,147 @@
       "tags": [],
       "entity_type": "ams_byte",
       "summary": "AMS cost is not what you pay the vendor. It’s what the system forces you to repeat."
+    },
+    {
+      "dataset": "sap-sales-processes",
+      "id": "sap_sales_control_plane_v0_1",
+      "title": "SAP Sales Control Plane",
+      "path": "sap-sales-processes/sap_sales_control_plane_v0_1.json",
+      "tags": [
+        "sap",
+        "sales",
+        "sd",
+        "determination",
+        "integration",
+        "control-plane",
+        "assessment"
+      ],
+      "entity_type": "sap_sales_control_plane",
+      "summary": "Machine-readable control traces from sales-document determination through supply, stock, logistics, billing, integration, failures and tests."
+    },
+    {
+      "dataset": "sap-sales-processes",
+      "id": "sap_sales_mechanism_codebook_v0_1",
+      "title": "SAP Sales Mechanism Codebook",
+      "path": "sap-sales-processes/sap_sales_mechanism_codebook_v0_1.json",
+      "tags": [
+        "sap",
+        "sales",
+        "sd",
+        "mechanisms",
+        "determination",
+        "knowledge-graph",
+        "assessment"
+      ],
+      "entity_type": "sap_sales_mechanism_codebook",
+      "summary": "Stable graph identifiers and reusable control mechanisms for SAP Sales, separated from process-variant codes."
+    },
+    {
+      "dataset": "sap-sales-processes",
+      "id": "sap_sales_order_integration_map_v0_1",
+      "title": "SAP Sales Order Cross-Application Integration Map",
+      "path": "sap-sales-processes/sap_sales_order_integration_map_v0_1.json",
+      "tags": [
+        "sap",
+        "s4hana",
+        "sales",
+        "integration",
+        "production",
+        "projects",
+        "commerce",
+        "events"
+      ],
+      "entity_type": "sap_sales_cross_application_map",
+      "summary": "Normalizes sales-order origins, cross-application execution handoffs and business events without turning every system topology into a new sales process."
+    },
+    {
+      "dataset": "sap-sales-processes",
+      "id": "sap_sales_process_codebook_v0_1",
+      "title": "SAP Sales Process Codebook",
+      "path": "sap-sales-processes/sap_sales_process_codebook_v0_1.json",
+      "tags": [
+        "sap",
+        "sales",
+        "mnemonics",
+        "codebook",
+        "learning"
+      ],
+      "entity_type": "sap_sales_process_codebook",
+      "summary": "Stable mnemonic codes for SAP sales process variants and overlays, separated from changeable SAP scope-item identifiers."
+    },
+    {
+      "dataset": "sap-sales-processes",
+      "id": "sap_sales_process_coverage_v0_2",
+      "title": "SAP Sales Process Coverage Map",
+      "path": "sap-sales-processes/sap_sales_process_coverage_v0_2.json",
+      "tags": [
+        "sap",
+        "s4hana",
+        "sales",
+        "returns",
+        "claims",
+        "billing",
+        "settlement",
+        "coverage",
+        "ontology"
+      ],
+      "entity_type": "sap_sales_process_coverage",
+      "summary": "High-coverage normalization of SAP Sales process families, child variants, claims, returns, billing/settlement variants and adjacent capabilities."
+    },
+    {
+      "dataset": "sap-sales-processes",
+      "id": "sap_sales_process_coverage_v0_3",
+      "title": "SAP Sales Process Coverage Map v0.3",
+      "path": "sap-sales-processes/sap_sales_process_coverage_v0_3.json",
+      "tags": [
+        "sap",
+        "s4hana",
+        "sales",
+        "production",
+        "projects",
+        "integration",
+        "coverage",
+        "ontology"
+      ],
+      "entity_type": "sap_sales_process_coverage",
+      "summary": "Extends v0.2 from after-sales/billing coverage into production, project, recurring-delivery and cross-application Sales Order topology."
+    },
+    {
+      "dataset": "sap-sales-processes",
+      "id": "sap_sales_return_claims_architecture_notes_v0_1",
+      "title": "SAP Sales Returns and Claims Architecture Notes",
+      "path": "sap-sales-processes/sap_sales_return_claims_architecture_notes_v0_1.json",
+      "tags": [
+        "sap",
+        "s4hana",
+        "returns",
+        "claims",
+        "architecture",
+        "governance",
+        "ewm",
+        "api"
+      ],
+      "entity_type": "sap_sales_return_claims_architecture_notes",
+      "summary": "Architecture choices for returns and claims across reasons, inspection, disposition, refund, valuation, EWM, APIs and deployment boundaries."
+    },
+    {
+      "dataset": "sap-sales-processes",
+      "id": "sap_sales_return_claims_control_plane_v0_1",
+      "title": "SAP Sales Returns and Claims Control Plane",
+      "path": "sap-sales-processes/sap_sales_return_claims_control_plane_v0_1.json",
+      "tags": [
+        "sap",
+        "s4hana",
+        "sales",
+        "customer-returns",
+        "advanced-returns-management",
+        "claims",
+        "refund",
+        "inspection",
+        "reverse-logistics"
+      ],
+      "entity_type": "sap_sales_return_claims_control_plane",
+      "summary": "Deep reverse-logistics and customer-claims model separating physical receipt, ownership, inspection, disposition and compensation."
     }
   ]
 }

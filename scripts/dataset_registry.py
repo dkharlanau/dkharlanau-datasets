@@ -7,6 +7,7 @@ import argparse
 import json
 import re
 import sys
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -15,7 +16,9 @@ from typing import Any
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 DATASETS_ROOT = REPOSITORY_ROOT / "datasets"
 MANIFEST_PATH = DATASETS_ROOT / "manifest.json"
-REGISTRY_EXCLUSIONS = {"manifest.json", "schema.json"}
+CATALOG_PATH = DATASETS_ROOT / "catalog.json"
+COLLECTION_CONFIG_PATH = REPOSITORY_ROOT / "config" / "dataset-collections.json"
+REGISTRY_EXCLUSIONS = {"manifest.json", "catalog.json", "schema.json"}
 REQUIRED_META_FIELDS = (
     "schema",
     "schema_version",
@@ -145,6 +148,58 @@ def registry_records() -> tuple[list[tuple[Path, dict[str, Any]]], list[str]]:
     return records, errors
 
 
+def collection_config() -> tuple[list[dict[str, Any]], list[str]]:
+    errors: list[str] = []
+    try:
+        document = load_json(COLLECTION_CONFIG_PATH)
+    except RegistryError as exc:
+        return [], [str(exc)]
+    except OSError as exc:
+        return [], [f"config/dataset-collections.json: cannot read JSON: {exc}"]
+    if not isinstance(document, dict):
+        return [], ["config/dataset-collections.json: top-level JSON value must be an object"]
+    if document.get("schema") != "dkharlanau.dataset.collections":
+        errors.append("config/dataset-collections.json: unsupported schema")
+    if document.get("schema_version") != "1.0":
+        errors.append("config/dataset-collections.json: unsupported schema_version")
+    collections = document.get("collections")
+    if not isinstance(collections, list):
+        return [], errors + ["config/dataset-collections.json: collections must be a list"]
+
+    ids: list[str] = []
+    for index, collection in enumerate(collections):
+        where = f"config/dataset-collections.json collections[{index}]"
+        if not isinstance(collection, dict):
+            errors.append(f"{where}: expected object")
+            continue
+        for field in ("id", "title", "description"):
+            if not isinstance(collection.get(field), str) or not collection[field].strip():
+                errors.append(f"{where}.{field}: non-empty string required")
+        collection_id = collection.get("id")
+        if isinstance(collection_id, str):
+            ids.append(collection_id)
+        topics = collection.get("topics")
+        if not isinstance(topics, list) or not topics or not all(
+            isinstance(topic, str) and topic.strip() for topic in topics
+        ):
+            errors.append(f"{where}.topics: non-empty array of strings required")
+        elif topics != sorted(set(topics)):
+            errors.append(f"{where}.topics: values must be unique and sorted")
+
+    if len(ids) != len(set(ids)):
+        errors.append("config/dataset-collections.json: collection ids must be unique")
+    directories = sorted(path.name for path in DATASETS_ROOT.iterdir() if path.is_dir())
+    if sorted(ids) != directories:
+        errors.append(
+            "config/dataset-collections.json: collection ids must exactly match dataset directories "
+            f"(configured={sorted(ids)!r}, directories={directories!r})"
+        )
+    return sorted(
+        (item for item in collections if isinstance(item, dict)),
+        key=lambda item: str(item.get("id", "")),
+    ), errors
+
+
 def normalized_timestamp(value: str) -> datetime | None:
     try:
         parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
@@ -216,12 +271,76 @@ def build_manifest(records: list[tuple[Path, dict[str, Any]]]) -> dict[str, Any]
     }
 
 
+def build_catalog(
+    records: list[tuple[Path, dict[str, Any]]],
+    collections: list[dict[str, Any]],
+) -> dict[str, Any]:
+    record_paths = {path for path, _ in records}
+    all_paths = dataset_paths()
+    items: list[dict[str, Any]] = []
+    for collection in collections:
+        collection_id = collection["id"]
+        collection_records = [
+            (path, document)
+            for path, document in records
+            if document["meta"]["dataset"] == collection_id
+        ]
+        component_count = sum(
+            1
+            for path in all_paths
+            if path.relative_to(DATASETS_ROOT).parts[0] == collection_id
+            and path not in record_paths
+        )
+        entity_types = Counter(
+            document["meta"].get("entity_type") or "dataset_byte"
+            for _, document in collection_records
+        )
+        observed_tags = sorted(
+            {
+                tag
+                for _, document in collection_records
+                for tag in document.get("tags", [])
+                if isinstance(tag, str) and tag
+            }
+        )
+        items.append(
+            {
+                "id": collection_id,
+                "title": collection["title"],
+                "description": collection["description"],
+                "topics": collection["topics"],
+                "record_count": len(collection_records),
+                "supporting_file_count": component_count,
+                "entity_types": dict(sorted(entity_types.items())),
+                "observed_tags": observed_tags,
+                "record_path_prefix": f"datasets/{collection_id}/",
+                "repository_url": (
+                    "https://github.com/dkharlanau/dkharlanau-datasets/tree/main/"
+                    f"datasets/{collection_id}"
+                ),
+            }
+        )
+    return {
+        "schema": "dkharlanau.dataset.catalog",
+        "schema_version": "1.0",
+        "generated_at_utc": manifest_timestamp(records),
+        "manifest": "datasets/manifest.json",
+        "license": "CC-BY-NC-4.0",
+        "collection_count": len(items),
+        "record_count": len(records),
+        "supporting_file_count": len(all_paths) - len(records),
+        "collections": items,
+    }
+
+
 def serialized_manifest(manifest: dict[str, Any]) -> str:
     return json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
 
 
 def run(command: str) -> int:
     records, errors = registry_records()
+    collections, collection_errors = collection_config()
+    errors.extend(collection_errors)
     if errors:
         for error in errors:
             print(f"ERROR: {error}", file=sys.stderr)
@@ -229,9 +348,15 @@ def run(command: str) -> int:
         return 1
 
     expected = serialized_manifest(build_manifest(records))
+    expected_catalog = serialized_manifest(build_catalog(records, collections))
     if command == "build":
         MANIFEST_PATH.write_text(expected, encoding="utf-8")
+        CATALOG_PATH.write_text(expected_catalog, encoding="utf-8")
         print(f"Wrote {MANIFEST_PATH.relative_to(REPOSITORY_ROOT)} with {len(records)} records.")
+        print(
+            f"Wrote {CATALOG_PATH.relative_to(REPOSITORY_ROOT)} with "
+            f"{len(collections)} collections."
+        )
         return 0
 
     actual = MANIFEST_PATH.read_text(encoding="utf-8") if MANIFEST_PATH.exists() else ""
@@ -243,10 +368,19 @@ def run(command: str) -> int:
         )
         return 1
 
+    actual_catalog = CATALOG_PATH.read_text(encoding="utf-8") if CATALOG_PATH.exists() else ""
+    if actual_catalog != expected_catalog:
+        print(
+            "ERROR: datasets/catalog.json is stale; run "
+            "python3 scripts/dataset_registry.py build",
+            file=sys.stderr,
+        )
+        return 1
+
     component_count = len(dataset_paths()) - len(records)
     print(
         f"Validated {len(records)} registered records and {component_count} supporting JSON files; "
-        "manifest is current."
+        f"manifest and {len(collections)}-collection catalog are current."
     )
     return 0
 

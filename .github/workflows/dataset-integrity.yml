@@ -18,3 +18,9 @@ jobs:
           python-version: "3.12"
       - name: Validate JSON records and registry
         run: python3 scripts/dataset_registry.py validate
+      - name: Test collection catalog and local discovery
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Smoke-test zero-dependency query CLI
+        run: |
+          python3 scripts/query_datasets.py collections
+          python3 scripts/query_datasets.py search governance --limit 3 --json

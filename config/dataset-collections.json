@@ -1,0 +1,42 @@
+{
+  "schema": "dkharlanau.dataset.collections",
+  "schema_version": "1.0",
+  "collections": [
+    {
+      "id": "agentic-bytes",
+      "title": "Agentic systems patterns",
+      "description": "Compact records about agent architecture, control, memory, reliability, evaluation and practical adoption.",
+      "topics": ["agentic-ai", "ai-agents", "architecture", "evaluation", "governance", "reliability"]
+    },
+    {
+      "id": "ams",
+      "title": "SAP application management services",
+      "description": "Operational records for SAP support, incident triage, service improvement, handover and evidence-driven AMS decisions.",
+      "topics": ["ams", "incident-management", "operations", "sap", "service-management"]
+    },
+    {
+      "id": "DAMA",
+      "title": "Data governance and MDG",
+      "description": "Records about ownership, operating models, maturity, controls and SAP master-data governance.",
+      "topics": ["dama", "data-governance", "mdg", "operating-model", "ownership"]
+    },
+    {
+      "id": "LLM-prompts",
+      "title": "Reusable LLM prompts",
+      "description": "Structured prompt records intended for transparent learning, adaptation and bounded experimentation.",
+      "topics": ["llm", "prompt-engineering", "prompts", "reusable-patterns"]
+    },
+    {
+      "id": "sap-sales-processes",
+      "title": "SAP Sales Process Atlas",
+      "description": "Process coverage, mechanisms, control planes and cross-application relationships for SAP sales scenarios.",
+      "topics": ["order-to-cash", "process-architecture", "sales", "sap", "sap-sd"]
+    },
+    {
+      "id": "TRIZ-bytes",
+      "title": "TRIZ patterns and techniques",
+      "description": "Compact TRIZ concepts and techniques for structured problem solving and system improvement.",
+      "topics": ["innovation", "problem-solving", "systems-thinking", "triz"]
+    }
+  ]
+}

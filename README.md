@@ -45,6 +45,14 @@ for entry in manifest["entries"]:
 The repository uses only JSON and a standard-library validator; no package installation
 is required for this workflow.
 
+Browse the six collections or search across record identity, title, summary, tags and entity type:
+
+```bash
+python3 scripts/query_datasets.py collections
+python3 scripts/query_datasets.py search "authority"
+python3 scripts/query_datasets.py search "control" --dataset sap-sales-processes --json
+```
+
 ## Contents
 
 - `datasets/agentic-bytes/` — compact records about agentic systems and patterns
@@ -54,10 +62,14 @@ is required for this workflow.
 - `datasets/sap-sales-processes/` — SAP Sales Process Atlas codebook and detailed process records
 - `datasets/TRIZ-bytes/` — structured TRIZ knowledge records
 - `datasets/manifest.json` — dataset discovery manifest
+- `datasets/catalog.json` — generated collection-level catalog and coverage summary
 - `datasets/schema.json` — shared structural schema
 
 See [`docs/data-contract.md`](docs/data-contract.md) for record identity, supporting-file,
 compatibility, and deterministic manifest rules.
+
+See [`docs/discovery-and-reuse.md`](docs/discovery-and-reuse.md) for local search, safe reuse,
+and the evidence boundary with Signal to Insight and SAP Agentic Operations.
 
 ## Intended use
 
@@ -112,8 +124,17 @@ Dzmitryi Kharlanau. "Dataset Bytes by Dzmitryi Kharlanau", `v1.0.0`. CC BY-NC 4.
 
 See `CITATION.cff` and `docs/citation.md` for the repository citation guidance.
 
-## Canonical website
+## Related projects
 
-Public landing pages remain on:
+- [Signal to Insight](https://github.com/dkharlanau/signal-to-insight) can turn selected, independently reviewed source material into a published evidence-backed explainer; dataset records are not auto-published as insights.
+- [SAP Agentic Operations](https://github.com/dkharlanau/sap-agentic-operations) uses operational Evidence Packs and may review external research context, but these public datasets never stand in for observations from a production incident.
+- [Agent-Ready Web Profile](https://github.com/dkharlanau/agent-ready-web-profile) exposes machine-readable discovery patterns for public knowledge and dataset surfaces.
 
-- https://dkharlanau.github.io/datasets/
+The canonical public dataset landing page remains https://dkharlanau.github.io/datasets/.
+
+## About the author
+
+Created and maintained by **Dzmitryi Kharlanau**, an SAP consultant and system analyst working across enterprise architecture, data, integration, operations, and practical AI.
+
+- [Website and knowledge base](https://dkharlanau.github.io/)
+- [LinkedIn](https://www.linkedin.com/in/dkharlanau/)

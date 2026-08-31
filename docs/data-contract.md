@@ -17,6 +17,11 @@ A registered record is a top-level JSON object with a `meta` object whose `schem
 Every registered record appears in [`datasets/manifest.json`](../datasets/manifest.json).
 The pair `(dataset, id)` is unique across the repository.
 
+Collection-level descriptions and aggregate coverage appear in the generated
+[`datasets/catalog.json`](../datasets/catalog.json). Curated titles, descriptions and topics
+come from `config/dataset-collections.json`; counts, entity types and observed tags are derived
+from the actual records.
+
 ## Supporting JSON files
 
 Some datasets split a larger model into smaller group files. These files remain public,
@@ -36,7 +41,8 @@ Build or refresh it:
 python3 scripts/dataset_registry.py build
 ```
 
-Validate every JSON file, record identity, required metadata, and manifest freshness:
+Validate every JSON file, record identity, required metadata, manifest freshness and collection
+catalog freshness:
 
 ```bash
 python3 scripts/dataset_registry.py validate
